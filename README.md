@@ -3,7 +3,7 @@ Python program used to convert Unity Analytics raw data export into rows in Post
 
 Usage:
 
-    python UnityAnalyticsCollectorJob.py <path to config file>
+    python ua2sql.py <path to config file>
 
 This program does the following:
 
