@@ -80,7 +80,7 @@ transaction_table = Table('transaction', metadata,
                           Column('sdk_ver', String),
                           Column('currency', String),
                           Column('amount', Numeric),
-                          Column('transactionid', Integer),
+                          Column('transactionid', String),
                           Column('productid', String),
                           Column('receipt', postgresql.JSONB)
                           )
