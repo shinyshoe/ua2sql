@@ -80,7 +80,7 @@ transaction_table = Table('transaction', metadata,
                           Column('sdk_ver', String),
                           Column('currency', String),
                           Column('amount', Numeric),
-                          Column('transactionid', Integer),
+                          Column('transactionid', String),
                           Column('productid', String),
                           Column('receipt', postgresql.JSONB)
                           )
@@ -215,6 +215,7 @@ def insert_data_into_database(table, dump_directory):
         print('ingesting: ' + full_file_name)
 
         with open(full_file_name) as unityDumpFile:
+            totalInsertedRowsCount = 0
             arrayToInsert = []
 
             for line in unityDumpFile:
@@ -234,9 +235,15 @@ def insert_data_into_database(table, dump_directory):
                         dictToInsert[tableColumnName] = valToAdd
 
                 arrayToInsert.append(dictToInsert)
+                if len(arrayToInsert) >= 1000:
+                    totalInsertedRowsCount += len(arrayToInsert)
+                    conn.execute(table.insert().values(arrayToInsert))
+                    print('inserted ' + str(totalInsertedRowsCount) + ' rows.')
+                    arrayToInsert = []
 
-            print('inserting ' + str(len(arrayToInsert)) + ' rows...')
-            conn.execute(table.insert(), arrayToInsert)
+            totalInsertedRowsCount += len(arrayToInsert)
+            conn.execute(table.insert().values(arrayToInsert))
+            print('inserted ' + str(totalInsertedRowsCount) + ' rows.')
 
 
 # ties it all together - downloads a dump, backs it up, and inserts it into the database
