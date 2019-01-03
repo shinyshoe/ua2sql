@@ -34,5 +34,5 @@ The program has been tested on both Python 2.7.5. and 3.5.2.
 Python library dependencies and versions used during development:
 
 1. requests 2.10.0
-2. pyscopg2 2.6.2
+2. psycopg2 2.6.2
 3. SQLAlchemy 1.0.15
