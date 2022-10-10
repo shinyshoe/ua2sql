@@ -1,6 +1,13 @@
 # config
 config.json
 
+# storage
+temp_storage/
+backup_storage/
+
+# MACOS
+.DS_Store
+
 # PyCharm
 .idea/
 

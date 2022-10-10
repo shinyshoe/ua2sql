@@ -1,38 +1,30 @@
-# ua2sql
-Python program used to convert Unity Analytics raw data export into rows in PostgreSQL tables.
+# unity_analytics_export
+Python program used to pull Unity Analytics raw data export into a local directory.
 
 Usage:
 
-    python ua2sql.py <path to config file>
+    python unity_analytics_export.py <path_to_config_file> <start_date> <end_date> 
+
+- The start date (inclusive) of the export. The date is expressed in YYYY-MM-DD format (ISO–8601).
+
+- The end data (exclusive) of the export. The date is expressed in YYYY-MM-DD format (ISO 8601). This is the date at which to close the query. When searching for the current day, use the following day’s date.
+
 
 This program does the following:
 
-1. Collects `appStart`, `custom`, and `transaction` Unity Analytics feeds via Unity's Raw Data Export HTTP API.
-2. Connects to a PostgreSQL database and inserts the collected data into database rows.
-3. (Optional) Copies collected raw data into a backup location for long term storage. This location is specified via `backup_collection_path`.
-4. Deletes the raw dumps stored locally to keep things clean.
+1. Requests to export `custom` raw data from Unity Analytics using the HTTP API.
+2. Downloads the exported data into the directory specified in the format `<collection_path>/start-date_end-date`
 
 The configuration file must be a valid `json` file containing these parameters:
 
     {
-      "postgres_server": "<name or ip>",
-      "database": "<db name>",
-      "user": "<db user with insert permissions>",
-      "password": "<db user pwd>",
-      "local_collection_path": "<local temp file storage path>",
-      "backup_collection_path": "<long term backup path>",
+      "collection_path": "<long term backup path>",
       "unity_project_id":  "<unity project id>",
       "unity_export_api_key": "<unity api key>"
     }
-
-On the PostgreSQL side this program will create four tables. One table each for `appStart`, `custom`, and `transaction` data streams. These map one-to-one with the data Unity reports. Finally, the program makes a `jobId` table which is used to track the previous job GUID for each data stream type to continue from the last time the program was run.
-
-The first time this program is run it will try to gather as much data from Unity as possible - 30 days. Subsequent runs using the same configuration file will continue exactly where it left off last time. Suggested use is to run this program once per day.
 
 The program has been tested on both Python 2.7.5. and 3.5.2.
 
 Python library dependencies and versions used during development:
 
 1. requests 2.10.0
-2. pyscopg2 2.6.2
-3. SQLAlchemy 1.0.15
